@@ -1,6 +1,7 @@
 <html>
 <head>
  <title>Youtube</title>
+ <link href="{{ asset('simplelogo.png') }}" rel="icon" />
  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
  @vite('resources/css/app.css')
 </head>
@@ -22,10 +23,10 @@
     console.log(2);
     const mainBody = document.querySelector('.mainBody');
     console.log(2);
-    menu.addEventListener('click', function() {
+    menu.onclick =  () => {
       sidebar.classList.toggle('show-sidebar');
       mainBody.classList.toggle('expand-body');
-    });
+    };
   </script>
 </body>
 </html>

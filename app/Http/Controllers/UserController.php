@@ -16,7 +16,7 @@ class UserController extends Controller
 
     public function create()
     {
-        return view('users.create');
+        return view('users.register');
     }
 
     public function store(Request $request)
@@ -30,7 +30,11 @@ class UserController extends Controller
         $data = $request->all();
         $data['password'] = Hash::make($data['password']);
         User::create($data);
-        return redirect()->route('users.index')->with('success', 'User created successfully');
+        return redirect()->route('home')->with('success', 'User created successfully');
+    }
+
+    public function login() {
+        return view('users.login');
     }
 
     public function show($id)

@@ -4,11 +4,16 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\VideoController;
 use App\Http\Controllers\UserController;
 
+Route::get('/', function () {
+    return view('home');
+})->name('home');
+
 Route::get('/users', [UserController::class, 'index'])->name('users.index');
 
 Route::get('/user/{id}', [UserController::class, 'show'])->name('users.show');
 
-Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
+Route::get('/register', [UserController::class, 'create'])->name('users.register');
+Route::get('/login', [UserController::class, 'login'])->name('users.login');
 Route::post('/users', [UserController::class, 'store'])->name('users.store');
 
 Route::get('/user/{id}/edit', [UserController::class, 'edit'])->name('users.edit');
@@ -30,7 +35,3 @@ Route::put('/videos/{id}', [VideoController::class, 'update'])->name('videos.upd
 
 Route::delete('/videos/{id}', [VideoController::class, 'destroy'])->name('videos.destroy');
 
-
-Route::get('/', function () {
-    return view('home');
-});

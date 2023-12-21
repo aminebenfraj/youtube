@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('description')->nullable();
             $table->string('title');
+            $table->string('url');
             $table->integer('views_count');
             $table->unsignedBigInteger('userid');
             $table->foreign('userid')->references('id')->on('users');

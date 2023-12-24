@@ -4,6 +4,7 @@
  <link href="{{ asset('simplelogo.png') }}" rel="icon" />
  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
  @vite('resources/css/app.css')
+ @cloudinaryJS
 </head>
 <body>
     <div class='wrapper'>

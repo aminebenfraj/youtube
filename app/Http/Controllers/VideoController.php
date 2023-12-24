@@ -20,33 +20,32 @@ class VideoController extends Controller
     }
 
     public function store(Request $request)
-    {
-    // Validation goes here if needed
+{
+    try {
+        // Upload video to Cloudinary
+        $uploadedFileUrl = Cloudinary::uploadVideo($request->file('video')->getRealPath())->getSecurePath();
 
-    // Assuming you have a file input with the name 'video' in your form
-    $video = $request->file('video');
+        // Additional logic to store other form data in the database
+        $title = $request->input('title');
+        $description = $request->input('description');
 
-    // // Upload the video to Cloudinary
-    // $upload = Cloudinary::uploadVideo($video->getRealPath(), ['resource_type' => 'video', 'folder' => 'uploads']);
+        // Create a new Video record in the database
+        $video = Video::create([
+            'title' => $title,
+            'description' => $description,
+            'url' => $uploadedFileUrl,
+            'views_count' => 0,
+            'userid' => 1,
+        ]);
 
-    // // Access the Cloudinary URL
-    // $videoUrl = $upload->getSecurePath();
-
-    // Additional logic to store other form data in the database
-    $title = $request->input('title');
-    $description = $request->input('description');
-
-    // Save video data to the database
-    // Video::create([
-    //     'title' => $title,
-    //     'description' => $description,
-    //     'url' => $videoUrl,
-    //     'views_count' => 0,
-    //     'userid' => 1,
-    // ]);
-
-    return redirect()->route('videos.create')->with('success', 'Video created successfully');
+        return redirect()->route('videos.show',$video->id)->with('success', 'Video created successfully');
+    } catch (\Exception $e) {
+        // Handle the error, for example, log it or return a response with an error message
+        return redirect()->route('videos.create')->with('error', 'Failed to upload video');
+    }
 }
+
+
 
     public function show($id)
     {

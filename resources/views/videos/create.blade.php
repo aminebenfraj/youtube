@@ -4,6 +4,7 @@
 <section class="px-6 pb-6 pt-14 flex flex-col items-center">
     <h1 class="mb-20 text-2xl text-gray-200">Upload a video</h1>
 	<form enctype="multipart/form-data" novalidate="" action="{{ route('videos.store') }}" method="post" class="container w-3/4 flex flex-col mx-auto space-y-12">
+		@csrf
 		<fieldset class="grid grid-cols-4 gap-6 p-6 rounded-md shadow-sm">
 			<div class="space-y-2 col-span-full lg:col-span-1 text-gray-300">
 				<p class="font-medium">Tell us about the video</p>
@@ -16,11 +17,11 @@
 				</div>
 				<div class="col-span-full">
 					<label for="title" class="text-gray-300">Title</label>
-					<input id="title" type="text" placeholder="Insert a title for your video" class="rounded-lg flex-1 appearance-none border border-gray-600 w-full py-3 px-4 bg-primary text-gray-200 placeholder-gray-400 shadow-sm text-sm outline-none ring-0 focus:ring-0 focus:outline-none focus:border-gray-400 mt-2">
+					<input id="title" type="text" name="title" placeholder="Insert a title for your video" class="rounded-lg flex-1 appearance-none border border-gray-600 w-full py-3 px-4 bg-primary text-gray-200 placeholder-gray-400 shadow-sm text-sm outline-none ring-0 focus:ring-0 focus:outline-none focus:border-gray-400 mt-2">
 				</div>
 				<div class="col-span-full mt-10">
 					<label for="description" class="text-gray-300">Description</label>
-					<textarea id="description" placeholder="" class="rounded-lg flex-1 appearance-none border border-gray-600 w-full py-3 px-4 bg-primary text-gray-200 placeholder-gray-400 shadow-sm text-sm outline-none ring-0 focus:ring-0 focus:outline-none focus:border-gray-400 mt-2 h-52"></textarea>
+					<textarea id="description" name="description" placeholder="" class="rounded-lg flex-1 appearance-none border border-gray-600 w-full py-3 px-4 bg-primary text-gray-200 placeholder-gray-400 shadow-sm text-sm outline-none ring-0 focus:ring-0 focus:outline-none focus:border-gray-400 mt-2 h-52"></textarea>
 				</div>
 				<div class="col-span-full mt-10">
 					<label for="bio" class="text-gray-300">Add a thumbnail</label>

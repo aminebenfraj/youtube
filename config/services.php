@@ -13,11 +13,6 @@ return [
     | a conventional file to locate the various service credentials.
     |
     */
-    'cloudinary' => [
-        'cloud_name' => env('dcbygmpji'),
-        'api_key' => env('883445879375967'),
-        'api_secret' => env('Z6ImsUED2jnSuo4P3cCv_03nnSo'),
-    ],    
     'mailgun' => [
         'domain' => env('MAILGUN_DOMAIN'),
         'secret' => env('MAILGUN_SECRET'),

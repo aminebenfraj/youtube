@@ -18,3 +18,45 @@ body {
     width: 0;
 }
   
+
+.video-container {
+    display: grid;
+    grid-template-columns: 4fr 4fr 0.5fr 2.5fr;
+    grid-template-rows: auto;
+    grid-template-areas:
+      "video video . recommended"
+      "title title . recommended"
+      "actions actions . recommended"
+      "information information . recommended"
+      "description description . recommended"
+      "comments comments . recommended";
+  }
+
+  .grid-video-video {
+    grid-area: video;
+  }
+  
+  .grid-video-recommended {
+    grid-area: recommended;
+  }
+
+  
+  .grid-video-title {
+      grid-area: title;
+    }
+    
+  .grid-video-actions {
+      grid-area: actions;
+  }
+    
+  .grid-video-information {
+    grid-area: information;
+  }
+  
+  .grid-video-comments {
+    grid-area: comments;
+  }
+  
+  .grid-video-description {
+    grid-area: description;
+  }

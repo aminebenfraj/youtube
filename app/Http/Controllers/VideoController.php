@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\VideoReaction;
 use Illuminate\Http\Request;
 use App\Models\Video;
+use App\Models\User;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
 class VideoController extends Controller
@@ -11,7 +13,7 @@ class VideoController extends Controller
     public function index()
     {
         $videos = Video::all();
-        return view('videos.index', compact('videos'));
+        return view('home', compact('videos'));
     }
 
     public function create()
@@ -23,17 +25,19 @@ class VideoController extends Controller
 {
     try {
         // Upload video to Cloudinary
-        $uploadedFileUrl = Cloudinary::uploadVideo($request->file('video')->getRealPath())->getSecurePath();
+        $uploadedVideoUrl = Cloudinary::uploadVideo($request->file('video')->getRealPath())->getSecurePath();
+        
+        $uploadedThumbnailUrl = Cloudinary::upload($request->file('thumbnail')->getRealPath())->getSecurePath();
 
-        // Additional logic to store other form data in the database
         $title = $request->input('title');
+
         $description = $request->input('description');
 
-        // Create a new Video record in the database
         $video = Video::create([
             'title' => $title,
             'description' => $description,
-            'url' => $uploadedFileUrl,
+            'url' => $uploadedVideoUrl,
+            'thumbnail' => $uploadedThumbnailUrl,
             'views_count' => 0,
             'userid' => 1,
         ]);
@@ -50,7 +54,10 @@ class VideoController extends Controller
     public function show($id)
     {
         $video = Video::find($id);
-        return view('videos.show', compact('video'));
+        $user = User::find($video->userid);
+        $likes = VideoReaction::where('videoid', $id)->where('type', true)->count();
+        $dislikes = VideoReaction::where('videoid', $id)->where('type', false)->count();
+        return view('videos.show', compact('video','likes','dislikes','user'));
     }
 
     public function edit($id)

@@ -9,7 +9,7 @@
     </div>
 
     <form class="flex items-center h-16 mt-3">
-        <input type="text" placeholder="Type to search" class="text-sm w-96 text-gray-200 px-2 border-none focus:outline-none rounded-l-full bg-transparent h-9" />
+        <input type="text" placeholder="Type to search" class="text-sm w-96 text-gray-200 px-2 border-none outline-none rounded-full bg-transparent h-9" />
     </form>
     
     <div class="flex gap-6 items-center">

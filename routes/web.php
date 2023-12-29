@@ -1,12 +1,11 @@
 <?php
 
+use App\Http\Controllers\VideoReactionController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\VideoController;
 use App\Http\Controllers\UserController;
 
-Route::get('/', function () {
-    return view('home');
-})->name('home');
+Route::get('/', [VideoController::class, 'index'])->name('home');
 
 Route::get('/users', [UserController::class, 'index'])->name('users.index');
 
@@ -34,4 +33,9 @@ Route::get('/videos/{id}/edit', [VideoController::class, 'edit'])->name('videos.
 Route::put('/videos/{id}', [VideoController::class, 'update'])->name('videos.update');
 
 Route::delete('/videos/{id}', [VideoController::class, 'destroy'])->name('videos.destroy');
+
+
+Route::get('/like/{videoId}', [VideoReactionController::class, 'like'])->name('videoreaction.like');
+
+Route::get('/dislike/{videoId}', [VideoReactionController::class, 'dislike'])->name('videoreaction.dislike');
 

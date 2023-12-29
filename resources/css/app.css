@@ -60,3 +60,11 @@ body {
   .grid-video-description {
     grid-area: description;
   }
+
+  .show-reply-form {
+    display: block !important;
+  }
+
+  .show-replies {
+    display: block !important;
+  }

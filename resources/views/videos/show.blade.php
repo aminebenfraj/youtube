@@ -51,10 +51,63 @@
     <p class="grid-video-description">Description: {{ $video->description }}</p>
 
     <div class="grid-video-comments">
-    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Odit, assumenda soluta omnis ipsum, possimus voluptatum nesciunt, accusamus sapiente quam blanditiis distinctio rerum labore quibusdam inventore consequuntur aperiam provident? Totam, necessitatibus?</p>
-    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta, dignissimos animi aspernatur distinctio delectus laborum eos vel perferendis, ullam non provident beatae voluptates et officia dicta sed placeat amet perspiciatis!
+    <form action="{{ route('comments.store', $video->id) }}" method="post">
+      @csrf
+      <div class="col-span-full">
+					<label for="comment" class="text-gray-300">Add a comment</label>
+					<input id="comment" type="text" name="comment"  class="rounded-lg flex-1 appearance-none border border-gray-600 w-full py-3 px-4 bg-primary text-gray-200 placeholder-gray-400 shadow-sm text-sm outline-none ring-0 focus:ring-0 focus:outline-none focus:border-gray-400 mt-2">
+          <button class="px-10 py-2 bg-secondary rounded-md text-white hover:bg-gray-700">
+              Comment
+          </button>
+				</div>
+    </form>
+    @foreach($comments as $comment)
+    <div class="mb-10">
 
-    </p>
+      <p>{{ $comment->content }}</p>
+      <div class="flex gap-1 mt-1 relative">
+        
+        <a href="{{ route('commentreaction.like', ['commentid' => $comment->id,'videoid' => $video->id]) }}">{{ $comment->likes }} likes</a>
+        
+        <a href="{{ route('commentreaction.dislike', ['commentid' => $comment->id,'videoid' => $video->id]) }}">{{ $comment->dislikes }} dislikes</a>
+        
+        <button type="button" onclick="handleShowReplyForm({{ $comment->id }})">reply</button>
+      </div>
+      <form class="hidden" action="{{ route('replies.store', ['commentid' => $comment->id,'videoid' => $video->id]) }}" method="post" id="replyform{{$comment->id}}">
+        @csrf
+        <div class="col-span-full">
+          <label for="reply" class="text-gray-300">Add a reply</label>
+					<input id="reply" type="text" name="reply"  class="rounded-lg flex-1 appearance-none border border-gray-600 w-full py-3 px-4 bg-primary text-gray-200 placeholder-gray-400 shadow-sm text-sm outline-none ring-0 focus:ring-0 focus:outline-none focus:border-gray-400 mt-2">
+          <button class="px-5 py-1 bg-secondary rounded-md text-white hover:bg-gray-700">
+            reply
+          </button>
+				</div>
+      </form>
+      <div>
+        <div class="hidden" id="showreplies{{ $comment->id }}">
+          @foreach($comment->replies as $reply)
+          <div>
+            <p>{{ $reply->content }}</p>
+            <div class="flex gap-1 mt-1 relative">
+            <a href="{{ route('replyreaction.like', ['replyid' => $reply->id,'videoid' => $video->id]) }}">{{ $reply->likes }} likes</a>
+        
+            <a href="{{ route('replyreaction.dislike', ['replyid' => $reply->id,'videoid' => $video->id]) }}">{{ $reply->dislikes }} dislikes</a>
+            </div>
+          </div>
+      <!-- <div class="flex gap-1 mt-1 relative">
+
+        <a href="{{ route('commentreaction.like', ['commentid' => $comment->id,'videoid' => $video->id]) }}">{{ $comment->likes }} likes</a>
+        
+        <a href="{{ route('commentreaction.dislike', ['commentid' => $comment->id,'videoid' => $video->id]) }}">{{ $comment->dislikes }} dislikes</a>
+        
+      </div> -->
+      @endforeach
+      </div>
+
+        <button type="button" onclick="handleShowReplies({{ $comment->id }})">show replies</button>
+      </div>
+    </div>
+    @endforeach
     </div>
     
     <div class="grid-video-recommended">
@@ -99,15 +152,19 @@
        </a>
        
     </div>
-    
-    
-    
-    
-    
-  
+    <script>
+    function handleShowReplyForm(commentId) {
+      document.getElementById(`replyform${commentId}`).classList.toggle('show-reply-form');
+    }
+    function handleShowReplies(commentId) {
+      
+      document.getElementById(`showreplies${commentId}`).classList.toggle('show-replies');
+    }
+</script>
 </div>
-    @else
-    <p>Video not found.</p>
-    @endif
+@else
+<p>Video not found.</p>
+@endif
+  
 
 @endsection

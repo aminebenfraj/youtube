@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Comment;
+use App\Models\CommentReaction;
+use App\Models\Reply;
+use App\Models\ReplyReaction;
 use App\Models\VideoReaction;
 use Illuminate\Http\Request;
 use App\Models\Video;
@@ -32,7 +36,7 @@ class VideoController extends Controller
             $title = $request->input('title');
 
             $description = $request->input('description');
-            dd($uploadedVideoUrl,$uploadedThumbnailUrl);
+            
             $video = Video::create([
                 'title' => $title,
                 'description' => $description,
@@ -57,7 +61,21 @@ class VideoController extends Controller
         $user = User::find($video->userid);
         $likes = VideoReaction::where('videoid', $id)->where('type', true)->count();
         $dislikes = VideoReaction::where('videoid', $id)->where('type', false)->count();
-        return view('videos.show', compact('video', 'likes', 'dislikes', 'user'));
+        $comments = Comment::where('videoid', $id)->get();
+
+        foreach ($comments as $comment) {
+            $comment->likes = CommentReaction::where('commentid', $comment->id)->where('type', true)->count();
+            $comment->dislikes = CommentReaction::where('commentid', $comment->id)->where('type', false)->count();
+            $comment->replies = Reply::where('commentid', $comment->id)->get();
+
+            foreach ($comment->replies as $reply) {
+                $reply->likes = ReplyReaction::where('replyid', $reply->id)->where('type', true)->count();
+                $reply->dislikes = ReplyReaction::where('replyid', $reply->id)->where('type', false)->count();
+            }
+            
+        }
+
+        return view('videos.show', compact('video', 'likes', 'dislikes', 'user', 'comments'));
     }
 
     public function edit($id)

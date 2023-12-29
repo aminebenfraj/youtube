@@ -7,5 +7,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class ReplyReaction extends Model
 {
-    use HasFactory;
+    protected $fillable = ['type', 'replyid', 'userid'];
 }

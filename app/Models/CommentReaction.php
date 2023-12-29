@@ -7,5 +7,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class CommentReaction extends Model
 {
-    use HasFactory;
+    protected $fillable = ['type', 'commentid', 'userid'];
 }

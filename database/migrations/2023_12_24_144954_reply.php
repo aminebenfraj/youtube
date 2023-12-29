@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('Replys', function (Blueprint $table) {
+        Schema::create('Replies', function (Blueprint $table) {
             $table->id();
             $table->string('content');
             $table->unsignedBigInteger('commentid');
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('Replys');
+        Schema::dropIfExists('Replies');
     }
 };

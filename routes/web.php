@@ -1,9 +1,13 @@
 <?php
 
-use App\Http\Controllers\VideoReactionController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\VideoController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\VideoController;
+use App\Http\Controllers\CommentController;
+use App\Http\Controllers\ReplyController;
+use App\Http\Controllers\VideoReactionController;
+use App\Http\Controllers\CommentReactionController;
+use App\Http\Controllers\ReplyReactionController;
 
 Route::get('/', [VideoController::class, 'index'])->name('home');
 
@@ -39,3 +43,15 @@ Route::get('/like/{videoId}', [VideoReactionController::class, 'like'])->name('v
 
 Route::get('/dislike/{videoId}', [VideoReactionController::class, 'dislike'])->name('videoreaction.dislike');
 
+
+Route::post('/comments/create/{videoid}', [CommentController::class, 'store'])->name('comments.store');
+
+Route::get('/comment/like/{commentid}/{videoid}', [CommentReactionController::class, 'like'])->name('commentreaction.like');
+
+Route::get('/comment/dislike/{commentid}/{videoid}', [CommentReactionController::class, 'dislike'])->name('commentreaction.dislike');
+
+Route::post('/replies/create/{commentid}/{videoid}', [ReplyController::class, 'store'])->name('replies.store');
+
+Route::get('/reply/like/{replyid}/{videoid}', [ReplyReactionController::class, 'like'])->name('replyreaction.like');
+
+Route::get('/reply/dislike/{replyid}/{videoid}', [ReplyReactionController::class, 'dislike'])->name('replyreaction.dislike');

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->boolean('type');
             $table->unsignedBigInteger('replyid');
-            $table->foreign('replyid')->references('id')->on('replys');
+            $table->foreign('replyid')->references('id')->on('replies');
             $table->unsignedBigInteger('userid');
             $table->foreign('userid')->references('id')->on('users');
             $table->timestamps();

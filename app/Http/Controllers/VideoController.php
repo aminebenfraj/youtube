@@ -22,32 +22,32 @@ class VideoController extends Controller
     }
 
     public function store(Request $request)
-{
-    try {
-        // Upload video to Cloudinary
-        $uploadedVideoUrl = Cloudinary::uploadVideo($request->file('video')->getRealPath())->getSecurePath();
-        
-        $uploadedThumbnailUrl = Cloudinary::upload($request->file('thumbnail')->getRealPath())->getSecurePath();
+    {
+        try {
+            // Upload video to Cloudinary
+            $uploadedVideoUrl = Cloudinary::uploadVideo($request->file('video')->getRealPath())->getSecurePath();
 
-        $title = $request->input('title');
+            $uploadedThumbnailUrl = Cloudinary::upload($request->file('thumbnail')->getRealPath())->getSecurePath();
 
-        $description = $request->input('description');
+            $title = $request->input('title');
 
-        $video = Video::create([
-            'title' => $title,
-            'description' => $description,
-            'url' => $uploadedVideoUrl,
-            'thumbnail' => $uploadedThumbnailUrl,
-            'views_count' => 0,
-            'userid' => 1,
-        ]);
+            $description = $request->input('description');
+            dd($uploadedVideoUrl,$uploadedThumbnailUrl);
+            $video = Video::create([
+                'title' => $title,
+                'description' => $description,
+                'url' => $uploadedVideoUrl,
+                'thumbnail' => $uploadedThumbnailUrl,
+                'views_count' => 0,
+                'userid' => 1,
+            ]);
 
-        return redirect()->route('videos.show',$video->id)->with('success', 'Video created successfully');
-    } catch (\Exception $e) {
-        // Handle the error, for example, log it or return a response with an error message
-        return redirect()->route('videos.create')->with('error', 'Failed to upload video');
+            return redirect()->route('videos.show', $video->id)->with('success', 'Video created successfully');
+        } catch (\Exception $e) {
+            // Handle the error, for example, log it or return a response with an error message
+            return redirect()->route('videos.create')->with('error', 'Failed to upload video');
+        }
     }
-}
 
 
 
@@ -57,7 +57,7 @@ class VideoController extends Controller
         $user = User::find($video->userid);
         $likes = VideoReaction::where('videoid', $id)->where('type', true)->count();
         $dislikes = VideoReaction::where('videoid', $id)->where('type', false)->count();
-        return view('videos.show', compact('video','likes','dislikes','user'));
+        return view('videos.show', compact('video', 'likes', 'dislikes', 'user'));
     }
 
     public function edit($id)

@@ -1,6 +1,6 @@
 <html>
 <head>
- <title>Youtube</title>
+ <title>Vibe View</title>
  <link href="{{ asset('simplelogo.png') }}" rel="icon" />
  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
  @vite('resources/css/app.css')
@@ -19,11 +19,11 @@
     </div>
     <script>
     const menu = document.querySelector('#menu');
-    console.log(1);
+    
     const sidebar = document.querySelector('#sidebar');
-    console.log(2);
+   
     const mainBody = document.querySelector('.mainBody');
-    console.log(2);
+    
     menu.onclick =  () => {
       sidebar.classList.toggle('show-sidebar');
       mainBody.classList.toggle('expand-body');

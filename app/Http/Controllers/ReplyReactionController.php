@@ -9,9 +9,8 @@ class ReplyReactionController extends Controller
 {
     public function like($replyid,$videoid)
     {
-        $userId = 2; // Assuming you are hardcoding user ID for testing
     
-        $existingReaction = ReplyReaction::where('userid', $userId)
+        $existingReaction = ReplyReaction::where('userid', auth()->user()->id)
             ->where('replyid', $replyid)
             ->first();
     
@@ -31,7 +30,7 @@ class ReplyReactionController extends Controller
             ReplyReaction::create([
                 'type' => true,
                 'replyid' => $replyid,
-                'userid' => $userId,
+                'userid' => auth()->user()->id,
             ]);
             $message = 'Video reaction created successfully.';
         }
@@ -42,9 +41,8 @@ class ReplyReactionController extends Controller
     
     
         public function dislike($replyid,$videoid) {
-            $userId = 2; // Assuming you are hardcoding user ID for testing
     
-        $existingReaction = ReplyReaction::where('userid', $userId)
+        $existingReaction = ReplyReaction::where('userid', auth()->user()->id)
             ->where('replyid', $replyid)
             ->first();
     
@@ -64,7 +62,7 @@ class ReplyReactionController extends Controller
             ReplyReaction::create([
                 'type' => false,
                 'replyid' => $replyid,
-                'userid' => $userId,
+                'userid' => auth()->user()->id,
             ]);
             $message = 'Video reaction created successfully.';
         }

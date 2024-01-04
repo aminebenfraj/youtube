@@ -8,10 +8,9 @@ use Illuminate\Http\Request;
 class CommentReactionController extends Controller
 {
     public function like($commentid,$videoid)
-{
-    $userId = 1; // Assuming you are hardcoding user ID for testing
+    {
 
-    $existingReaction = CommentReaction::where('userid', $userId)
+    $existingReaction = CommentReaction::where('userid', auth()->user()->id)
         ->where('commentid', $commentid)
         ->first();
 
@@ -31,7 +30,7 @@ class CommentReactionController extends Controller
         CommentReaction::create([
             'type' => true,
             'commentid' => $commentid,
-            'userid' => $userId,
+            'userid' => auth()->user()->id,
         ]);
         $message = 'Video reaction created successfully.';
     }
@@ -42,9 +41,8 @@ class CommentReactionController extends Controller
 
 
     public function dislike($commentid,$videoid) {
-        $userId = 1; // Assuming you are hardcoding user ID for testing
 
-    $existingReaction = CommentReaction::where('userid', $userId)
+    $existingReaction = CommentReaction::where('userid', auth()->user()->id)
         ->where('commentid', $commentid)
         ->first();
 
@@ -64,7 +62,7 @@ class CommentReactionController extends Controller
         CommentReaction::create([
             'type' => false,
             'commentid' => $commentid,
-            'userid' => $userId,
+            'userid' => auth()->user()->id,
         ]);
         $message = 'Video reaction created successfully.';
     }

@@ -13,17 +13,15 @@ Route::get('/', [VideoController::class, 'index'])->name('home');
 
 Route::get('/users', [UserController::class, 'index'])->name('users.index');
 
-Route::get('/user/{id}', [UserController::class, 'show'])->name('users.show');
+Route::get('/user/{id}/videos', [UserController::class, 'videos'])->name('users.videos');
 
-Route::get('/register', [UserController::class, 'create'])->name('users.register');
-Route::get('/login', [UserController::class, 'login'])->name('users.login');
-Route::post('/users', [UserController::class, 'store'])->name('users.store');
+Route::get('/user/{id}/about', [UserController::class, 'about'])->name('users.about');
 
-Route::get('/user/{id}/edit', [UserController::class, 'edit'])->name('users.edit');
-Route::put('/user/{id}', [UserController::class, 'update'])->name('users.update');
+Route::get('/user/{id}/settings', [UserController::class, 'settings'])->name('users.settings');
 
-Route::delete('/users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
+Route::put('/user/update', [UserController::class, 'update'])->name('users.update');
 
+Route::put('/user/security', [UserController::class, 'security'])->name('users.security');
 
 Route::get('/videos', [VideoController::class, 'index'])->name('videos.index');
 
@@ -55,3 +53,5 @@ Route::post('/replies/create/{commentid}/{videoid}', [ReplyController::class, 's
 Route::get('/reply/like/{replyid}/{videoid}', [ReplyReactionController::class, 'like'])->name('replyreaction.like');
 
 Route::get('/reply/dislike/{replyid}/{videoid}', [ReplyReactionController::class, 'dislike'])->name('replyreaction.dislike');
+
+Auth::routes();

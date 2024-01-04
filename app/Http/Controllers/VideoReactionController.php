@@ -8,10 +8,9 @@ class VideoReactionController extends Controller
 {
 
     public function like($videoId)
-{
-    $userId = 1; // Assuming you are hardcoding user ID for testing
+    {
 
-    $existingReaction = VideoReaction::where('userid', $userId)
+    $existingReaction = VideoReaction::where('userid', auth()->user()->id)
         ->where('videoid', $videoId)
         ->first();
 
@@ -31,7 +30,7 @@ class VideoReactionController extends Controller
         VideoReaction::create([
             'type' => true,
             'videoid' => $videoId,
-            'userid' => $userId,
+            'userid' => auth()->user()->id,
         ]);
         $message = 'Video reaction created successfully.';
     }
@@ -41,10 +40,9 @@ class VideoReactionController extends Controller
 
 
 
-    public function dislike($videoId) {
-        $userId = 1; // Assuming you are hardcoding user ID for testing
+    public function dislike($videoId) { // Assuming you are hardcoding user ID for testing
 
-    $existingReaction = VideoReaction::where('userid', $userId)
+    $existingReaction = VideoReaction::where('userid', auth()->user()->id)
         ->where('videoid', $videoId)
         ->first();
 
@@ -64,7 +62,7 @@ class VideoReactionController extends Controller
         VideoReaction::create([
             'type' => false,
             'videoid' => $videoId,
-            'userid' => $userId,
+            'userid' => auth()->user()->id,
         ]);
         $message = 'Video reaction created successfully.';
     }

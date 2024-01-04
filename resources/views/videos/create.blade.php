@@ -37,10 +37,8 @@
 				</div>
 				<div class="col-span-full mt-10">
 					<p class="text-gray-300">Add a thumbnail</p>
-					<div class="relative flex flex-col gap-3 items-center justify-center mt-2 group w-[380px] h-52 rounded-md bg-gray-800">
-					<span class="material-icons text-gray-300 text-7xl">
-						photo_library
-					</span>
+					<div class="relative flex flex-col gap-3 items-center justify-center mt-2 group w-[380px] h-52 rounded-md overflow-hidden bg-primary">
+					<img src="{{ asset('thumbnail-placeholder.jpg') }}" id="thumbnail-image" alt="" class="w-full h-full object-contain">
 						<div class="absolute inset-0 hidden group-hover:block bg-primary/50">
                             <label  for="thumbnail" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 text-lg rounded-full border border-gray-600 bg-gray-600 text-gray-200 flex items-center justify-center">
                                 <span class="material-icons">
@@ -60,4 +58,18 @@
 		</fieldset>
 	</form>
 </section>
+<script>
+    const thumbnailImage = document.getElementById('thumbnail-image')
+    const thumbnailInput = document.getElementById('thumbnail')
+    thumbnailInput.addEventListener("change", (e) => {
+        const target = e.target;
+        const files = target?.files;
+        const reader = new FileReader();
+        reader.onload = async function () {
+            if (reader.result)
+                thumbnailImage.src = reader.result
+        };
+        if (files) reader.readAsDataURL(files[0]);
+    })
+</script>
 @endsection

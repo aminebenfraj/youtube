@@ -3,75 +3,82 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Video;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    public function index()
+    public function videos($id)
     {
-        $users = User::all();
-        return view('users.index', compact('users'));
-    }
 
-    public function create()
-    {
-        return view('users.register');
-    }
-
-    public function store(Request $request)
-    {
-        $request->validate([
-            'username' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:4',
-        ]);
-
-        $data = $request->all();
-        $data['password'] = Hash::make($data['password']);
-        User::create($data);
-        return redirect()->route('home')->with('success', 'User created successfully');
-    }
-
-    public function login() {
-        return view('users.login');
-    }
-
-    public function show($id)
-    {
-        $user = User::find($id);
-        return view('users.show', compact('user'));
-    }
-
-    public function edit($id)
-    {
-        $user = User::find($id);
-        return view('users.edit', compact('user'));
-    }
-
-    public function update(Request $request, $id)
-    {
-        $request->validate([
-            'username' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,'.$id,
-            'password' => 'nullable|string|min:8',
-        ]);
-
-        $user = User::find($id);
-        $user->update($request->except('password'));
-
-        // If updating password, hash it with bcrypt
-        if ($request->filled('password')) {
-            $user->password = Hash::make($request->input('password'));
-            $user->save();
+        if($id == auth()->user()->id){
+            $user = auth()->user();
+        } else{
+            $user = User::find($id);
         }
 
-        return redirect()->route('users.index')->with('success', 'User updated successfully');
+        $videos = Video::where('userid',$id)->latest()->get();
+        return view('users.videos', compact('user','videos'));
     }
 
-    public function destroy($id)
+    public function about($id)
     {
-        User::find($id)->delete();
-        return redirect()->route('users.index')->with('success', 'User deleted successfully');
+        $user = User::find($id);
+        return view('users.about', compact('user'));
     }
+
+    public function settings($id)
+    {
+        $user = User::find($id);
+        return view('users.settings', compact('user'));
+    }
+
+    public function update(Request $request)
+    {
+        $request->validate([
+            'username' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255',
+            'phone' => 'required|string|min:8',
+            'bio' => 'required|string|max:255',
+        ]);
+
+        $user = User::find(auth()->user()->id);
+
+        if (!$user) {
+            return redirect()->route('login')->with('error', 'User not found');
+        }
+
+        if ($request->hasFile('profile')) {
+            $uploadedProfilePicUrl = Cloudinary::upload($request->file('profile')->getRealPath())->getSecurePath();
+            $user->image = $uploadedProfilePicUrl;
+        }
+
+
+        $user->update($request->except('profile'));
+
+        return redirect()->route('users.settings', auth()->user()->id)->with('success', 'Profile updated successfully');
+    }
+
+
+    public function security(Request $request) {
+        $user = User::find(auth()->user()->id);
+
+        $request->validate([
+            'oldPassword' => ['required'],
+            'newPassword' => ['required', 'string', 'confirmed'],
+        ]);
+    
+        if (!Hash::check($request->oldPassword, $user->password)) {
+            return redirect()->back()->withErrors(['oldPassword' => 'The old password is incorrect.']);
+        }
+        
+        $user->update([
+            'password' => Hash::make($request->newPassword),
+        ]);
+    
+        return redirect()->route('users.settings', auth()->user()->id);
+    }
+
 }

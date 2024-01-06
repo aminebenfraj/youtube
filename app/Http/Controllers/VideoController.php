@@ -6,6 +6,7 @@ use App\Models\Comment;
 use App\Models\CommentReaction;
 use App\Models\Reply;
 use App\Models\ReplyReaction;
+use App\Models\Subscription;
 use App\Models\VideoReaction;
 use Illuminate\Http\Request;
 use App\Models\Video;
@@ -18,15 +19,37 @@ class VideoController extends Controller
 
     public function index()
     {
-        $videos = Video::all();
+        $subscriptions = Subscription::where('subscriberid', auth()->user()->id)->take(4)->get();
+        $subscribedUserIds = $subscriptions->pluck('subscribedtoid')->toArray();
 
-        // Update created_at to human-readable format
-        foreach ($videos as $video) {
+        $subscriptionsVideos = Video::whereIn('userid', $subscribedUserIds)->get();
+
+        foreach ($subscriptionsVideos as $video) {
             $video->formatted_created_at = $this->formatTimeAgo($video->created_at);
             $video->formatted_views_count = $this->formatViewCount($video->views_count);
         }
 
-        return view('home', compact('videos'));
+        $trendingVideos = Video::whereNotIn('id', $subscriptionsVideos->pluck('id'))->orderBy('views_count', 'desc')->take(4)->get();
+
+        foreach ($trendingVideos as $video) {
+            $video->formatted_created_at = $this->formatTimeAgo($video->created_at);
+            $video->formatted_views_count = $this->formatViewCount($video->views_count);
+        }
+
+        $latestVideos = Video::whereNotIn('id', $subscriptionsVideos->pluck('id'))
+            ->whereNotIn('id', $trendingVideos->pluck('id'))
+            ->latest()
+            ->take(4)
+            ->get();
+
+        foreach ($latestVideos as $video) {
+            $video->formatted_created_at = $this->formatTimeAgo($video->created_at);
+            $video->formatted_views_count = $this->formatViewCount($video->views_count);
+        }
+
+
+
+        return view('home', compact('latestVideos','trendingVideos','subscriptionsVideos'));
     }
 
 
@@ -118,6 +141,78 @@ class VideoController extends Controller
     {
         Video::find($id)->delete();
         return redirect()->route('videos.index')->with('success', 'Video deleted successfully');
+    }
+
+
+    public function trending() {
+        $videos = Video::orderBy('views_count', 'desc')->get();
+
+        // Update created_at to human-readable format
+        foreach ($videos as $video) {
+            $video->formatted_created_at = $this->formatTimeAgo($video->created_at);
+            $video->formatted_views_count = $this->formatViewCount($video->views_count);
+        }
+
+        return view('videos.trending', compact('videos'));
+    }
+
+    public function subscriptions() {
+        $subscriptions = Subscription::where('subscriberid', auth()->user()->id)->get();
+
+        $subscribedUserIds = $subscriptions->pluck('subscribedtoid')->toArray();
+        
+        $videos = Video::whereIn('userid', $subscribedUserIds)->get();
+
+        foreach ($videos as $video) {
+            $video->formatted_created_at = $this->formatTimeAgo($video->created_at);
+            $video->formatted_views_count = $this->formatViewCount($video->views_count);
+        }
+        
+        return view('videos.subscriptions', compact('videos'));
+
+    }
+
+    public function mine(){
+        
+        $videos = Video::where('userid', auth()->user()->id)->latest()->get();
+
+        foreach ($videos as $video) {
+            $video->formatted_created_at = $this->formatTimeAgo($video->created_at);
+            $video->formatted_views_count = $this->formatViewCount($video->views_count);
+        }
+        
+        return view('videos.mine', compact('videos'));
+    }
+
+    public function liked() {
+        $liked = VideoReaction::where('userid', auth()->user()->id)->where('type', true)->get();
+
+        $likedVideoIds = $liked->pluck('videoid')->toArray();
+        
+        $videos = Video::whereIn('id', $likedVideoIds)->get();
+
+        foreach ($videos as $video) {
+            $video->formatted_created_at = $this->formatTimeAgo($video->created_at);
+            $video->formatted_views_count = $this->formatViewCount($video->views_count);
+        }
+        
+        return view('videos.liked', compact('videos'));
+    }
+
+    public function search(Request $request, $query = null)
+    {
+        $query = $query ?? $request->input('query');
+
+        // Search for videos based on title and description
+        $videos = Video::where('title', 'like', "%$query%")
+                       ->get();
+
+        foreach ($videos as $video) {
+            $video->formatted_created_at = $this->formatTimeAgo($video->created_at);
+            $video->formatted_views_count = $this->formatViewCount($video->views_count);
+        }
+
+        return view('videos.search', compact('videos', 'query'));
     }
 
     

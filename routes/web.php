@@ -8,8 +8,12 @@ use App\Http\Controllers\ReplyController;
 use App\Http\Controllers\VideoReactionController;
 use App\Http\Controllers\CommentReactionController;
 use App\Http\Controllers\ReplyReactionController;
+use App\Http\Controllers\SubscriptionController;
 
 Route::get('/', [VideoController::class, 'index'])->name('home');
+
+
+Route::get('/subscribe/{subscribedtoid}', [SubscriptionController::class, 'create'])->name('subscription.create');
 
 Route::get('/users', [UserController::class, 'index'])->name('users.index');
 
@@ -23,7 +27,15 @@ Route::put('/user/update', [UserController::class, 'update'])->name('users.updat
 
 Route::put('/user/security', [UserController::class, 'security'])->name('users.security');
 
-Route::get('/videos', [VideoController::class, 'index'])->name('videos.index');
+Route::get('/trending', [VideoController::class, 'trending'])->name('videos.trending');
+
+Route::get('/subscriptions', [VideoController::class, 'subscriptions'])->name('videos.subscriptions');
+
+Route::get('/my-videos', [VideoController::class, 'mine'])->name('videos.mine');
+
+Route::get('/liked-videos', [VideoController::class, 'liked'])->name('videos.liked');
+
+Route::get('/search/{query?}', [VideoController::class, 'search'])->name('videos.search');
 
 Route::get('/videos/create', [VideoController::class, 'create'])->name('videos.create');
 

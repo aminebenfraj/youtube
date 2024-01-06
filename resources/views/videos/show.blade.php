@@ -29,10 +29,10 @@
         Delete video
       </button>
       @else
-      <button
-        class="px-4 py-1.5 text-sm font-bold bg-secondary rounded-md text-primary hover:bg-gray-700 hover:text-gray-300">
+      <a
+        class="px-4 py-1.5 text-sm font-bold bg-secondary rounded-md text-primary hover:bg-gray-700 hover:text-gray-300" href="{{ route('subscription.create', $user->id) }}">
         Subscribe
-      </button>
+      </a>
       @endif
     </div>
       
@@ -74,7 +74,11 @@
     <div class="mb-7">
 
       <div class="flex items-start gap-5">
-        <img src="{{ $user->image }}" alt="" class="w-10 h-10 rounded-full" />
+        @if($comment->user->image)
+        <img src="{{ $comment->user->image }}" alt="" class="w-10 h-10 rounded-full" />
+        @else
+        <img src="{{ asset('profile2.png') }}" alt="" class="w-10 h-10 rounded-full" />
+        @endif
         <div class="flex flex-col gap-0.5 text-sm">
           <p class="text-gray-300">{{ $comment->user->username }}</p>
 
@@ -115,7 +119,11 @@
           @foreach($comment->replies as $reply)
           <div class="">
             <div class="flex items-start gap-5">
-              <img src="{{ $user->image }}" alt="" class="w-10 h-10 rounded-full" />
+            @if($reply->user->image)
+            <img src="{{ $reply->user->image }}" alt="" class="w-10 h-10 rounded-full" />
+            @else
+            <img src="{{ asset('profile2.png') }}" alt="" class="w-10 h-10 rounded-full" />
+            @endif
               <div class="flex flex-col gap-0.5 text-sm">
                 <p class="text-gray-300">{{ $reply->user->username }}</p>
 
@@ -123,7 +131,7 @@
               </div>
             </div>
             <div class="flex items-center gap-4 mt-2 relative ml-14">
-              <a href="{{ route('replyreaction.like', ['replyid' => $reply->id,'videoid' => $video->id]) }}" class="flex items-center gap-0.5 text-gray-300"><img src="{{ asset('dislike.png') }}" width="25"> {{
+              <a href="{{ route('replyreaction.like', ['replyid' => $reply->id,'videoid' => $video->id]) }}" class="flex items-center gap-0.5 text-gray-300"><img src="{{ asset('like.png') }}" width="25"> {{
               $reply->likes }}</a>
 
                   <a href="{{ route('replyreaction.dislike', ['replyid' => $reply->id,'videoid' => $video->id]) }}" class="flex items-center gap-0.5 text-gray-300"><img src="{{ asset('dislike.png') }}" width="25"> {{

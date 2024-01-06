@@ -8,8 +8,8 @@
         </a>
     </div>
 
-    <form class="flex items-center mt-3  rounded-full bg-transparent h-10 px-5 border border-gray-700">
-        <input type="text" placeholder="Type to search" class="text-sm w-96 text-gray-200 border-none ring-0 focus:ring-0 bg-transparent outline-none rounded-l-full" />
+    <form class="flex items-center mt-3  rounded-full bg-transparent h-10 px-5 border border-gray-700" action="{{ route('videos.search') }}" method="GET">
+        <input type="text" name="query" placeholder="Type to search" class="text-sm w-96 text-gray-200 border-none ring-0 focus:ring-0 bg-transparent outline-none rounded-l-full" value="{{ $query ?? old('query') }}" />
         <button><img src="{{ asset('search.png') }}" width="20" /></button>
     </form>
     

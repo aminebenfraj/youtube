@@ -8,9 +8,10 @@
         <img src="{{ asset('profile.png') }}" alt="" class="w-20 h-20 rounded-full object-contain">
     @endif
     <p class="text-gray-300">&#64;{{ $user->username }}</p>
-    <button class="px-5 py-1.5 bg-secondary rounded-md text-white hover:bg-gray-700 mt-5">
+    <a
+        class="px-4 py-1.5 text-sm font-bold bg-secondary rounded-md text-primary hover:bg-gray-700 hover:text-gray-300" href="{{ route('subscription.create', $user->id) }}">
         Subscribe
-    </button>
+      </a>
 </div>
 <div class="flex justify-center text-gray-300 border-b border-zinc-600 px-20">
     <a href="{{ route('users.videos', auth()->user()->id) }}" class="px-5 py-1 border-b border-primary">Videos</a>

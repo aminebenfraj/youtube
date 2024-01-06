@@ -4,10 +4,10 @@
           <i class="material-icons">home</i>
           <span>Home</span>
         </a>
-        <div class="flex items-center gap-2">
+        <a href="{{ route('videos.trending') }}" class="flex items-center gap-2">
           <i class="material-icons">local_fire_department</i>
           <span>Trending</span>
-        </div>
+</a>
         
       </div>
       <hr class="border-t border-gray-600" />
@@ -22,22 +22,23 @@
       <hr class="border-t border-gray-600" />
       @endauth
       <div class="flex flex-col gap-5 text-gray-200 px-2 text-sm">
-      <div class="flex items-center gap-2">
+      <a href="{{ route('videos.subscriptions') }}" class="flex items-center gap-2">
           <i class="material-icons">subscriptions</i>
-          <span>Subcriptions</span>
-        </div>
+          <span>Subscriptions</span>
+</a>
         <!-- <div class="flex items-center gap-2">
           <i class="material-icons">history</i>
           <span>History</span>
         </div> -->
-        <div class="flex items-center gap-2">
+        <a href="{{ route('videos.mine') }}" class="flex items-center gap-2">
+
           <i class="material-icons">play_arrow</i>
           <span>Your Videos</span>
-        </div>
-        <div class="flex items-center gap-2">
+</a>
+        <a href="{{ route('videos.liked') }}" class="flex items-center gap-2">
           <i class="material-icons">thumb_up</i>
           <span>Liked Videos</span>
-        </div>
+</a>
       </div>
       <hr class="border-t border-gray-600" />
     </div>

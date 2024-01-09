@@ -15,4 +15,14 @@ class Video extends Model
     {
         return $this->belongsTo(User::class, 'userid');
     }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class, 'videoid');
+    }
+
+    public function videoReactions()
+    {
+        return $this->hasMany(VideoReaction::class, 'videoid');
+    }
 }

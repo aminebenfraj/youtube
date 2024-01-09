@@ -17,16 +17,10 @@ class CommentController extends Controller
         Comment::create([
             'content' => $request->input('comment'),
             'videoid' => $videoid,
-            'userid' => 1
+            'userid' => auth()->user()->id
         ]);
 
         return redirect()->route('videos.show', $videoid);
     }
 
-    public function destroy($id, $videoid)
-    {
-        Comment::find($id)->delete();
-        // delete all replies, all comment reactions and all reply reactions
-        return redirect()->route('videos.show', $videoid);
-    }
 }

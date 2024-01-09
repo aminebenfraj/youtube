@@ -13,4 +13,14 @@ class Comment extends Model
     {
         return $this->belongsTo(User::class, 'userid');
     }
+
+    public function replies()
+    {
+        return $this->hasMany(Reply::class, 'commentid');
+    }
+
+    public function commentReactions()
+    {
+        return $this->hasMany(CommentReaction::class, 'commentid');
+    }
 }

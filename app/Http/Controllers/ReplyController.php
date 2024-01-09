@@ -16,16 +16,9 @@ class ReplyController extends Controller
         Reply::create([
             'content' => $request->input('reply'),
             'commentid' => $commentid,
-            'userid' => 1
+            'userid' => auth()->user()->id
         ]);
 
-        return redirect()->route('videos.show', $videoid);
-    }
-
-    public function destroy($id, $videoid)
-    {
-        Reply::find($id)->delete();
-        // delete all reply reactions
         return redirect()->route('videos.show', $videoid);
     }
 }

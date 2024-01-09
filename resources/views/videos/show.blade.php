@@ -17,34 +17,47 @@
         <img src="{{ $user->image }}" alt="" class="w-10 h-10 rounded-full" />
         @else
         <img src="{{ asset('profile.png') }}" alt="" class="w-10 h-10 rounded-full" />
-
         @endif
-        <p>{{ $user->username }}</p>
+        <a href="{{ route('users.videos',$user->id) }}">{{ $user->username }}</a>
       </div>
-      @if(auth()->user()->id == $user->id)
-      <button class="px-4 py-1.5 text-sm bg-secondary rounded-md text-white hover:bg-gray-700 hover:text-gray-300">
+      @if(auth()->user() && auth()->user()->id == $user->id)
+      <a class="px-4 py-1.5 text-sm bg-secondary rounded-md text-white hover:bg-gray-700 hover:text-gray-300"
+        href="{{ route('videos.edit', $video->id) }}">
         Edit video
-      </button>
-      <button class="px-4 py-1.5 text-sm bg-secondary rounded-md text-white hover:bg-gray-700 hover:text-gray-300">
-        Delete video
-      </button>
+      </a>
+      <form action="{{ route('videos.delete', $video->id) }}" method="POST" class="mb-0">
+        @csrf
+        @method('DELETE')
+
+        <button type="submit"
+          class="px-4 py-1.5 text-sm bg-secondary rounded-md text-white hover:bg-gray-700 hover:text-gray-300">
+          Delete video
+        </button>
+      </form>
       @else
-      <a
-        class="px-4 py-1.5 text-sm font-bold bg-secondary rounded-md text-primary hover:bg-gray-700 hover:text-gray-300" href="{{ route('subscription.create', $user->id) }}">
+      @if($isSubscribed)
+      <a class="px-4 py-1.5 text-sm font-bold bg-gray-700 rounded-md text-gray-300 hover:bg-zinc-500"
+        href="{{ route('subscription.create', $user->id) }}">
+        Subscribed
+      </a>
+      @else
+      <a class="px-4 py-1.5 text-sm font-bold bg-secondary rounded-md text-primary hover:bg-gray-700 hover:text-gray-300"
+        href="{{ route('subscription.create', $user->id) }}">
         Subscribe
       </a>
       @endif
+      @endif
     </div>
-      
-      <div class="flex items-start text-gray-300 rounded-full border border-gray-500 text-[15px]">
-        <a href="{{ route('videoreaction.like', $video->id) }}"
+
+    <div class="flex items-start text-gray-300 rounded-full border border-gray-500 text-[15px]">
+      <a href="{{ route('videoreaction.like', $video->id) }}"
         class="flex items-center gap-1 py-1 pl-3 pr-2 hover:bg-zinc-950/50 rounded-l-full"><img
-        src="{{ asset('like.png') }}" width="27"> {{ $likes }} </a>
-        
-        <a href="{{ route('videoreaction.dislike', $video->id) }}"
+          src="{{ asset('like.png') }}" width="27"> {{ $likes }} </a>
+
+      <a href="{{ route('videoreaction.dislike', $video->id) }}"
         class="flex items-center gap-1 py-1 pl-2 pr-3 rounded-r-full relative before:absolute before:h-6 before:w-[1px] before:top-1.5 before:left-0 before:bg-gray-300 hover:bg-zinc-950/50 "><img
-        src="{{ asset('dislike.png') }}" width="27"> {{ $dislikes }}</a>
-      </div>
+          src="{{ asset('dislike.png') }}" width="27"> {{ $dislikes }}</a>
+    </div>
 
   </div>
 
@@ -119,11 +132,11 @@
           @foreach($comment->replies as $reply)
           <div class="">
             <div class="flex items-start gap-5">
-            @if($reply->user->image)
-            <img src="{{ $reply->user->image }}" alt="" class="w-10 h-10 rounded-full" />
-            @else
-            <img src="{{ asset('profile2.png') }}" alt="" class="w-10 h-10 rounded-full" />
-            @endif
+              @if($reply->user->image)
+              <img src="{{ $reply->user->image }}" alt="" class="w-10 h-10 rounded-full" />
+              @else
+              <img src="{{ asset('profile2.png') }}" alt="" class="w-10 h-10 rounded-full" />
+              @endif
               <div class="flex flex-col gap-0.5 text-sm">
                 <p class="text-gray-300">{{ $reply->user->username }}</p>
 
@@ -131,11 +144,13 @@
               </div>
             </div>
             <div class="flex items-center gap-4 mt-2 relative ml-14">
-              <a href="{{ route('replyreaction.like', ['replyid' => $reply->id,'videoid' => $video->id]) }}" class="flex items-center gap-0.5 text-gray-300"><img src="{{ asset('like.png') }}" width="25"> {{
-              $reply->likes }}</a>
+              <a href="{{ route('replyreaction.like', ['replyid' => $reply->id,'videoid' => $video->id]) }}"
+                class="flex items-center gap-0.5 text-gray-300"><img src="{{ asset('like.png') }}" width="25"> {{
+                $reply->likes }}</a>
 
-                  <a href="{{ route('replyreaction.dislike', ['replyid' => $reply->id,'videoid' => $video->id]) }}" class="flex items-center gap-0.5 text-gray-300"><img src="{{ asset('dislike.png') }}" width="25"> {{
-              $reply->dislikes }}</a>
+              <a href="{{ route('replyreaction.dislike', ['replyid' => $reply->id,'videoid' => $video->id]) }}"
+                class="flex items-center gap-0.5 text-gray-300"><img src="{{ asset('dislike.png') }}" width="25"> {{
+                $reply->dislikes }}</a>
             </div>
           </div>
           @endforeach
@@ -150,56 +165,41 @@
   </div>
 
   <div class="grid-video-recommended">
-    <a href="/video/{{ $video->id }}">
-      <div class="w-full mb-7">
-        <div class="w-full h-52">
-          <img src="{{ $video->thumbnail }}" alt="" class="bg-cover h-full w-full rounded-md" />
-        </div>
-        <div class="flex mt-2.5">
-          <div class="author shrink-0">
-            <img src="http://aninex.com/images/srvc/web_de_icon.png" alt=""
-              class="rounded-full bg-cover h-8 w-8 mr-2.5" />
-          </div>
-          <div class="flex flex-col">
-            <h3 class="text-gray-300 leading-[18px] text-sm mb-1.5">
-              {{ $video->title }}
-            </h3>
-            <a href="" class="text-sm no-underline text-gray-500">{{ $video->user->username }}</a>
-            <span class="text-sm no-underline text-gray-500">{{ $video->views_count }} Views • {{ $video->created_at }}
-              Months Ago</span>
-          </div>
-        </div>
-      </div>
-    </a>
 
-    <a href="/video/{{ $video->id }}">
-      <div class="w-full mb-7">
+    @forelse($sideVideos as $sideVideo)
+    <div class="w-[380px] mb-7">
+      <a href="/video/{{ $sideVideo->id }}" class="col-span-1">
         <div class="w-full h-52">
-          <img src="{{ $video->thumbnail }}" alt="" class="bg-cover h-full w-full rounded-md" />
+          <img src="{{ $sideVideo->thumbnail }}" alt="" class="bg-cover h-full w-full rounded-md" />
         </div>
         <div class="flex mt-2.5">
           <div class="author shrink-0">
-            <img src="http://aninex.com/images/srvc/web_de_icon.png" alt=""
-              class="rounded-full bg-cover h-8 w-8 mr-2.5" />
+            @if($sideVideo->user->image)
+            <img src="{{ $sideVideo->user->image }}" alt="" class="rounded-full bg-cover h-8 w-8 mr-2.5" />
+            @else
+            <img src="{{ asset('profile2.png') }}" alt="" class="rounded-full bg-cover h-8 w-8 mr-2.5" />
+            @endif
           </div>
           <div class="flex flex-col">
             <h3 class="text-gray-300 leading-[18px] text-sm mb-1.5">
-              {{ $video->title }}
+              {{ $sideVideo->title }}
             </h3>
-            <a href="" class="text-sm no-underline text-gray-500">{{ $video->user->username }}</a>
-            <span class="text-sm no-underline text-gray-500">{{ $video->views_count }} Views • {{ $video->created_at }}
-              Months Ago</span>
+            <a href="" class="text-sm no-underline text-gray-500">{{ $sideVideo->user->username }}</a>
+            <span class="text-sm no-underline text-gray-500">{{ $sideVideo->formatted_views_count }} Views • {{
+              $sideVideo->formatted_created_at }}</span>
           </div>
         </div>
-      </div>
-    </a>
+      </a>
+    </div>
+    @empty
+    <p class="text-gray-500 text-sm">No videos available</p>
+    @endforelse
 
   </div>
   <script>
-    const sidebar = document.querySelector('#sidebar');
-   
+    const sidebar = document.querySelector('#sidebar')    
     const mainBody = document.querySelector('.mainBody');
-   
+
     sidebar.classList.toggle('show-sidebar');
     mainBody.classList.toggle('expand-body');
 
@@ -208,7 +208,8 @@
     }
     function handleShowReplies(commentId) {
       document.getElementById(`showrepliesbutton${commentId}`).style.display = 'none'
-      document.getElementById(`showreplies${commentId}`).classList.toggle('show-replies')    }
+      document.getElementById(`showreplies${commentId}`).classList.toggle('show-replies')
+    }
   </script>
 </div>
 @else

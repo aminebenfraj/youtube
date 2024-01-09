@@ -4,10 +4,10 @@
 <div class="w-full h-full px-8 py-4">
   <h1 class="text-gray-400 mb-3">Latest</h1>
 
-  <div class="grid grid-cols-4 gap-10">
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10">
 
     @forelse($latestVideos as $video)
-    <div class="w-[380px] mb-7">
+    <div class="aspect-[38/28] mb-7">
       <a href="/video/{{ $video->id }}" class="col-span-1">
         <div class="w-full h-52">
           <img src="{{ $video->thumbnail }}" alt="" class="bg-cover h-full w-full rounded-md" />
@@ -41,10 +41,10 @@
   @auth
   <h1 class="text-gray-400 mb-3 mt-7">Subscriptions</h1>
 
-  <div class="flex justify-between flex-wrap">
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10">
 
     @forelse($subscriptionsVideos as $video)
-    <div class="w-[380px] mb-7">
+    <div class="aspect-[38/28] mb-7">
       <a href="/video/{{ $video->id }}" class="col-span-1">
         <div class="w-full h-52">
           <img src="{{ $video->thumbnail }}" alt="" class="bg-cover h-full w-full rounded-md" />
@@ -76,7 +76,7 @@
   @else
   <h1 class="text-gray-400 mb-3 mt-7">Subscriptions</h1>
 
-  <div class="flex justify-between flex-wrap">
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10">
       <div class="flex gap-2 items-center">
           <p class="text-gray-500 text-sm"><a class="font-medium text-gray-300 text-sm hover:underline" href="{{ route('login') }}">
             Sign in</a> to see video recommendations from your subscriptions.</p>
@@ -86,10 +86,10 @@
   @endauth
   <h1 class="text-gray-400 mb-3 mt-7">Trending</h1>
 
-  <div class="flex justify-between flex-wrap">
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10">
 
     @forelse($trendingVideos as $video)
-    <div class="w-[380px] mb-7">
+    <div class="aspect-[38/28] mb-7">
       <a href="/video/{{ $video->id }}" class="col-span-1">
         <div class="w-full h-52">
           <img src="{{ $video->thumbnail }}" alt="" class="bg-cover h-full w-full rounded-md" />

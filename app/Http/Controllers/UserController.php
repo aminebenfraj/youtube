@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Subscription;
 use App\Models\User;
 use App\Models\Video;
+use Carbon\Carbon;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -12,27 +14,62 @@ class UserController extends Controller
 {
     public function videos($id)
     {
+        $isSubscribed = false;
 
-        if($id == auth()->user()->id){
+        if(auth()->user() && $id == auth()->user()->id){
             $user = auth()->user();
         } else{
             $user = User::find($id);
+            if(auth()->user()) {
+                $subscription = Subscription::where('subscriberid', auth()->user()->id)->where('subscribedtoid', $user->id)->first();
+                if($subscription != null) {
+                    $isSubscribed = true;
+                }
+
+            }
         }
 
         $videos = Video::where('userid',$id)->latest()->get();
-        return view('users.videos', compact('user','videos'));
+
+        foreach ($videos as $video) {
+            $video->formatted_created_at = $this->formatTimeAgo($video->created_at);
+            $video->formatted_views_count = $this->formatViewCount($video->views_count);
+        }
+        
+        return view('users.videos', compact('user','videos','isSubscribed'));
     }
 
     public function about($id)
     {
-        $user = User::find($id);
-        return view('users.about', compact('user'));
+        $isSubscribed = false;
+
+        if(auth()->user() && $id == auth()->user()->id){
+            $user = auth()->user();
+        } else{
+            $user = User::find($id);
+            if(auth()->user()) {
+                $subscription = Subscription::where('subscriberid', auth()->user()->id)->where('subscribedtoid', $user->id)->first();
+                if($subscription != null) {
+                    $isSubscribed = true;
+                }
+
+            }
+        }
+
+        return view('users.about', compact('user','isSubscribed'));
     }
 
     public function settings($id)
     {
-        $user = User::find($id);
-        return view('users.settings', compact('user'));
+        $isSubscribed = false;
+
+        if(auth()->user() && $id == auth()->user()->id){
+            $user = auth()->user();
+            return view('users.settings', compact('user','isSubscribed'));
+        } else {
+            return redirect()->back();
+        }
+
     }
 
     public function update(Request $request)
@@ -79,6 +116,46 @@ class UserController extends Controller
         ]);
     
         return redirect()->route('users.settings', auth()->user()->id);
+    }
+
+    public function formatTimeAgo($created_at)
+    {
+        $now = Carbon::now();
+        $created_at = Carbon::parse($created_at);
+
+        $diffInSeconds = $now->diffInSeconds($created_at);
+
+        if ($diffInSeconds < 60) {
+            return 'just now';
+        } elseif ($diffInSeconds < 3600) {
+            $minutes = round($diffInSeconds / 60);
+            return "{$minutes} minutes ago";
+        } elseif ($diffInSeconds < 86400) {
+            $hours = round($diffInSeconds / 3600);
+            return "{$hours} hours ago";
+        } elseif ($diffInSeconds < 2592000) {
+            $days = round($diffInSeconds / 86400);
+            return "{$days} days ago";
+        } elseif ($diffInSeconds < 31536000) {
+            $months = round($diffInSeconds / 2592000);
+            return "{$months} months ago";
+        } else {
+            $years = round($diffInSeconds / 31536000);
+            return "{$years} years ago";
+        }
+    }
+
+    public function formatViewCount($views)
+    {
+        if ($views >= 1e9) {
+            return round($views / 1e9, 1) . 'B';
+        } elseif ($views >= 1e6) {
+            return round($views / 1e6, 1) . 'M';
+        } elseif ($views >= 1e3) {
+            return round($views / 1e3, 1) . 'K';
+        } else {
+            return $views;
+        }
     }
 
 }

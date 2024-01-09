@@ -13,4 +13,14 @@ class Reply extends Model
     {
         return $this->belongsTo(User::class, 'userid');
     }
+
+    public function comment()
+    {
+        return $this->belongsTo(Comment::class, 'commentid');
+    }
+
+    public function replyReactions()
+    {
+        return $this->hasMany(ReplyReaction::class, 'replyid');
+    }
 }

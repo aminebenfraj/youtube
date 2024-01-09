@@ -11,5 +11,8 @@ class VideoReaction extends Model
 
     protected $fillable = ['type', 'videoid', 'userid'];
 
-
+    public function replyReactions()
+    {
+        return $this->hasMany(ReplyReaction::class, 'replyid');
+    }
 }

@@ -19,37 +19,60 @@ class VideoController extends Controller
 
     public function index()
     {
-        $subscriptions = Subscription::where('subscriberid', auth()->user()->id)->take(4)->get();
-        $subscribedUserIds = $subscriptions->pluck('subscribedtoid')->toArray();
+        if(auth()->user()){
 
-        $subscriptionsVideos = Video::whereIn('userid', $subscribedUserIds)->get();
+            $subscriptions = Subscription::where('subscriberid', auth()->user()->id)->take(4)->get();
+            $subscribedUserIds = $subscriptions->pluck('subscribedtoid')->toArray();
+    
+            $subscriptionsVideos = Video::whereIn('userid', $subscribedUserIds)->get();
 
-        foreach ($subscriptionsVideos as $video) {
-            $video->formatted_created_at = $this->formatTimeAgo($video->created_at);
-            $video->formatted_views_count = $this->formatViewCount($video->views_count);
+            foreach ($subscriptionsVideos as $video) {
+                $video->formatted_created_at = $this->formatTimeAgo($video->created_at);
+                $video->formatted_views_count = $this->formatViewCount($video->views_count);
+            }
+    
+            $trendingVideos = Video::whereNotIn('id', $subscriptionsVideos->pluck('id'))->orderBy('views_count', 'desc')->take(4)->get();
+    
+            foreach ($trendingVideos as $video) {
+                $video->formatted_created_at = $this->formatTimeAgo($video->created_at);
+                $video->formatted_views_count = $this->formatViewCount($video->views_count);
+            }
+    
+            $latestVideos = Video::whereNotIn('id', $subscriptionsVideos->pluck('id'))
+                ->whereNotIn('id', $trendingVideos->pluck('id'))
+                ->latest()
+                ->take(4)
+                ->get();
+    
+            foreach ($latestVideos as $video) {
+                $video->formatted_created_at = $this->formatTimeAgo($video->created_at);
+                $video->formatted_views_count = $this->formatViewCount($video->views_count);
+            }
+    
+    
+    
+            return view('home', compact('latestVideos','trendingVideos','subscriptionsVideos'));
+        } else {
+            $trendingVideos = Video::orderBy('views_count', 'desc')->take(4)->get();
+    
+            foreach ($trendingVideos as $video) {
+                $video->formatted_created_at = $this->formatTimeAgo($video->created_at);
+                $video->formatted_views_count = $this->formatViewCount($video->views_count);
+            }
+    
+            $latestVideos = Video::whereNotIn('id', $trendingVideos->pluck('id'))
+                ->latest()
+                ->take(4)
+                ->get();
+    
+            foreach ($latestVideos as $video) {
+                $video->formatted_created_at = $this->formatTimeAgo($video->created_at);
+                $video->formatted_views_count = $this->formatViewCount($video->views_count);
+            }
+    
         }
 
-        $trendingVideos = Video::whereNotIn('id', $subscriptionsVideos->pluck('id'))->orderBy('views_count', 'desc')->take(4)->get();
-
-        foreach ($trendingVideos as $video) {
-            $video->formatted_created_at = $this->formatTimeAgo($video->created_at);
-            $video->formatted_views_count = $this->formatViewCount($video->views_count);
-        }
-
-        $latestVideos = Video::whereNotIn('id', $subscriptionsVideos->pluck('id'))
-            ->whereNotIn('id', $trendingVideos->pluck('id'))
-            ->latest()
-            ->take(4)
-            ->get();
-
-        foreach ($latestVideos as $video) {
-            $video->formatted_created_at = $this->formatTimeAgo($video->created_at);
-            $video->formatted_views_count = $this->formatViewCount($video->views_count);
-        }
-
-
-
-        return view('home', compact('latestVideos','trendingVideos','subscriptionsVideos'));
+        return view('home', compact('latestVideos','trendingVideos'));
     }
 
 

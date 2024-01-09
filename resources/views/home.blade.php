@@ -38,6 +38,7 @@
 
 
   </div>
+  @auth
   <h1 class="text-gray-400 mb-3 mt-7">Subscriptions</h1>
 
   <div class="flex justify-between flex-wrap">
@@ -72,6 +73,17 @@
     @endforelse
 
   </div>
+  @else
+  <h1 class="text-gray-400 mb-3 mt-7">Subscriptions</h1>
+
+  <div class="flex justify-between flex-wrap">
+      <div class="flex gap-2 items-center">
+          <p class="text-gray-500 text-sm"><a class="font-medium text-gray-300 text-sm hover:underline" href="{{ route('login') }}">
+            Sign in</a> to see video recommendations from your subscriptions.</p>
+          
+        </div>
+  </div>
+  @endauth
   <h1 class="text-gray-400 mb-3 mt-7">Trending</h1>
 
   <div class="flex justify-between flex-wrap">
@@ -105,5 +117,6 @@
     <p class="text-gray-500 text-sm">No videos available</p>
     @endforelse
   </div>
+  
 </div>
 @endsection
